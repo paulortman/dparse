@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 import re
 import yaml
-from pkg_resources import parse_requirements
+from packaging.requirements import Requirement
 import json
 
 # Python 2 & 3 compatible StringIO
@@ -67,12 +67,12 @@ class RequirementsDependency(Dependency):
     def parse(cls, line):
         # setuptools requires a space before the comment. If this isn't the case, add it.
         if "\t#" in line:
-            parsed, = parse_requirements(line.replace("\t#", "\t #"))
+            parsed = Requirement(line.replace("\t#", "\t #"))
         else:
-            parsed, = parse_requirements(line)
+            parsed = Requirement(line)
         dep = cls(
-            name=parsed.project_name,
-            specs=parsed.specs,
+            name=parsed.name,
+            specs=parsed.specifier,
             line=line,
             extras=parsed.extras
         )

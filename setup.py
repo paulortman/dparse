@@ -12,7 +12,7 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    "setuptools<=26.1.1",
+    "packaging",
     "pyyaml",
 ]
 
