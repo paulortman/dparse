@@ -292,14 +292,11 @@ class ToxINIParser(Parser):
         for section in parser.sections():
             try:
                 content = parser.get(section=section, option="deps")
-                for n, line in enumerate(content.splitlines()):
-                    if self.is_marked_line(line):
-                        continue
-                    if line:
-                        req = RequirementsTXTLineParser.parse(line)
-                        if req:
-                            req.dependency_type = self.obj.file_type
-                            self.obj.dependencies.append(req)
+
+                # Create a new parser to treat this content like a requirements.txt file, passing along any markers and
+                # collecting all the dependencies.  This approach allows '-r' includes to be correctly processed.
+                sub = parse(content, file_type=filetypes.requirements_txt, marker=self.obj.marker)
+                self.obj.dependencies.extend(sub.dependencies)
             except NoOptionError:
                 pass
 
